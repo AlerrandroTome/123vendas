@@ -7,8 +7,8 @@ namespace _123vendas.Domain
     {
         public static IServiceCollection ConfigureDomainServices(this IServiceCollection services)
         {
-            services.AddFluentValidationAutoValidation();
             services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
+            services.AddFluentValidationAutoValidation();
 
             return services;
         }

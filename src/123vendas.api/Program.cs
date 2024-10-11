@@ -20,6 +20,7 @@ builder.Services.AddSwaggerGen();
 builder.Services.ConfigureDomainServices();
 builder.Services.ConfigureDataServices(builder.Configuration);
 
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
