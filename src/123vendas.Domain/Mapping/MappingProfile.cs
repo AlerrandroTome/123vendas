@@ -13,7 +13,7 @@ namespace _123vendas.Domain.Mapping
                 {
                     dest.CalculateTotalAmount();
                 });
-            CreateMap<Sale, CreateSaleDto>();
+            CreateMap<Sale, CreateSaleDto>();            
             CreateMap<SaleDto, Sale>().ReverseMap();
 
             CreateMap<SaleItemDto, SaleItem>()
@@ -23,6 +23,14 @@ namespace _123vendas.Domain.Mapping
                 });            
             CreateMap<SaleItem, SaleItemDto>();
             CreateMap<CreateSaleItemDto, SaleItem>().ReverseMap();
+
+            CreateMap<UpdateSaleDto, Sale>()
+                .AfterMap((src, dest) =>
+                {
+                    dest.CalculateTotalAmount();
+                });
+            CreateMap<Sale, UpdateSaleDto>();
+            CreateMap<UpdateSaleItemDto, SaleItem>().ReverseMap();
         }
     }
 }

@@ -18,7 +18,7 @@ namespace _123vendas.api.Controllers
         [HttpGet("{id}")]
         public async Task<IActionResult> GetSaleByIdAsync(Guid id)
         {
-            var sale = await _saleService.GetSaleByIdAsync(id);
+            SaleDto? sale = await _saleService.GetSaleByIdAsync(id);
             if (sale == null)
             {
                 return NotFound();
@@ -37,7 +37,7 @@ namespace _123vendas.api.Controllers
         public async Task<IActionResult> CreateSaleAsync([FromBody] CreateSaleDto saleDto)
         {
             SaleDto createdSale = await _saleService.CreateSaleAsync(saleDto);
-            return CreatedAtAction(nameof(GetSaleByIdAsync), new { id = createdSale.Id }, createdSale);
+            return CreatedAtAction(nameof(GetSaleByIdAsync), new { id = createdSale.Id }, saleDto);
         }
         
         [HttpPut("{id}")]

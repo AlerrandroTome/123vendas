@@ -24,6 +24,8 @@ namespace _123vendas.Domain.Services
 
         public async Task<SaleDto> CreateSaleAsync(CreateSaleDto createSaleDto)
         {
+            if (createSaleDto.Items == null)
+                throw new ArgumentNullException(nameof(createSaleDto.Items));
             Sale sale = _mapper.Map<Sale>(createSaleDto);
 
             await _saleRepository.AddAsync(sale);
@@ -45,6 +47,9 @@ namespace _123vendas.Domain.Services
 
         public async Task<SaleDto?> UpdateSaleAsync(UpdateSaleDto updateSaleDto)
         {
+            if (updateSaleDto.Items == null)
+                throw new ArgumentNullException(nameof(updateSaleDto.Items));
+
             Sale? sale = await _saleRepository.GetByIdWithNoTrackingAsync(updateSaleDto.Id);
             if (sale == null) return null;
 

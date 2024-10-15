@@ -14,6 +14,12 @@ namespace _123vendas.Domain.Entities.Aggregates.Sales
         public string BranchName { get; private set; }
         public bool IsCanceled { get; private set; }
         public ICollection<SaleItem> Items { get; private set; }
+        
+        public Sale()
+        {
+            Id = Guid.NewGuid();
+            Items = new List<SaleItem>();
+        }
 
         public Sale(Guid customerId, string customerName, Guid branchId, string branchName)
         {
