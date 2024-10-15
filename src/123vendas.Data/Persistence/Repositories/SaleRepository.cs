@@ -16,11 +16,16 @@ namespace _123vendas.Data.Persistence.Repositories
         public async Task<Sale?> GetByIdAsync(Guid id)
         {
             return await _context.Sales.Include(s => s.Items).FirstOrDefaultAsync(s => s.Id == id);
+        }        
+        
+        public async Task<Sale?> GetByIdWithNoTrackingAsync(Guid id)
+        {
+            return await _context.Sales.Include(s => s.Items).AsNoTracking().FirstOrDefaultAsync(s => s.Id == id);
         }
 
         public async Task<IEnumerable<Sale>> GetAllAsync()
         {
-            return await _context.Sales.Include(s => s.Items).ToListAsync();
+            return await _context.Sales.Include(s => s.Items).AsNoTracking().ToListAsync();
         }
 
         public async Task AddAsync(Sale sale)
@@ -33,16 +38,6 @@ namespace _123vendas.Data.Persistence.Repositories
         {
             _context.Sales.Update(sale);
             await _context.SaveChangesAsync();
-        }
-
-        public async Task DeleteAsync(Guid id)
-        {
-            Sale? sale = await GetByIdAsync(id);
-            if (sale != null)
-            {
-                _context.Sales.Remove(sale);
-                await _context.SaveChangesAsync();
-            }
         }
     }
 }

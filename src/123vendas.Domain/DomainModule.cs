@@ -1,4 +1,6 @@
-﻿using FluentValidation.AspNetCore;
+﻿using _123vendas.Domain.Interfaces;
+using _123vendas.Domain.Services;
+using FluentValidation.AspNetCore;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace _123vendas.Domain
@@ -9,6 +11,8 @@ namespace _123vendas.Domain
         {
             services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
             services.AddFluentValidationAutoValidation();
+
+            services.AddScoped<ISaleService, SaleService>();
 
             return services;
         }

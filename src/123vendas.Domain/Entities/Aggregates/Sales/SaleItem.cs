@@ -18,26 +18,22 @@
             UnitPrice = unitPrice;
             Quantity = quantity;
             Discount = discount;
-
             CalculateTotalItemValue();
         }
 
-        public void UpdateQuantity(int quantity)
+        internal void UpdateSaleItem(decimal unitPrice, int quantity, decimal discount)
         {
+            UnitPrice = unitPrice;
             Quantity = quantity;
-            CalculateTotalItemValue();
-        }
-
-        public void UpdateDiscount(decimal discount)
-        {
             Discount = discount;
+
             CalculateTotalItemValue();
         }
 
-        private decimal CalculateTotalItemValue()
+        internal void CalculateTotalItemValue()
         {
-            var total = UnitPrice * Quantity - Discount;
-            return total < 0 ? 0 : total;
+            decimal total = UnitPrice * Quantity - Discount;
+            TotalItemValue = total < 0 ? 0 : total;
         }
     }
 }

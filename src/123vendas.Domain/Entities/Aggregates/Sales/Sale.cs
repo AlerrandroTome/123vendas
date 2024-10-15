@@ -1,4 +1,7 @@
-﻿namespace _123vendas.Domain.Entities.Aggregates.Sales
+﻿using _123vendas.Domain.DTOs;
+using _123vendas.Domain.Enums;
+
+namespace _123vendas.Domain.Entities.Aggregates.Sales
 {
     public class Sale
     {
@@ -23,46 +26,69 @@
             Items = new List<SaleItem>();
         }
 
-        public void AddItem(Guid productId, string productName, decimal unitPrice, int quantity, decimal discount)
+        public void UpdateSale(UpdateSaleDto saleDto)
         {
-            var saleItem = new SaleItem(productId, productName, unitPrice, quantity, discount);
-            Items.Add(saleItem);
-            CalculateTotalAmount();
+            BranchName = saleDto.BranchName;
+            BranchId = saleDto.BranchId;
+            CustomerName = saleDto.CustomerName;
+            CustomerId = saleDto.CustomerId;
         }
 
-        public void RemoveItem(Guid productId)
+        public Dictionary<string, List<SaleItem>> UpdateSaleItems(UpdateSaleDto saleDto)
         {
-            var itemToRemove = Items.FirstOrDefault(i => i.ProductId == productId);
-            if (itemToRemove != null)
+            List<SaleItem> existingItems = Items.ToList();
+            Dictionary<string, List<SaleItem>> actionsToTake = new Dictionary<string, List<SaleItem>>
             {
-                Items.Remove(itemToRemove);
-                CalculateTotalAmount();
+                { ESaleActions.ToBeDeleted.ToString(), new List<SaleItem>() },
+                { ESaleActions.ToBeAdded.ToString(), new List<SaleItem>() },
+                { ESaleActions.ToBeUpdated.ToString(), new List<SaleItem>() }
+            };
+
+            foreach (SaleItem? existingItem in existingItems)
+            {
+                UpdateSaleItemDto? newItem = saleDto.Items.FirstOrDefault(i => i.Id == existingItem.Id);
+                if (newItem == null)
+                {
+                    actionsToTake[ESaleActions.ToBeDeleted.ToString()].Add(existingItem);
+                    Items.Remove(existingItem);
+                }
+                else
+                {
+                    existingItem.UpdateSaleItem(newItem.UnitPrice, newItem.Quantity, newItem.Discount);
+                    actionsToTake[ESaleActions.ToBeUpdated.ToString()].Add(existingItem);
+                }
             }
+
+            IEnumerable<UpdateSaleItemDto> newItems = saleDto.Items.Where(s => !s.Id.HasValue);
+            foreach (UpdateSaleItemDto newItem in newItems)
+            {
+                actionsToTake[ESaleActions.ToBeAdded.ToString()].Add(AddItem(newItem.ProductId, newItem.ProductName, newItem.UnitPrice, newItem.Quantity, newItem.Discount));
+            }
+
+            return actionsToTake;
         }
 
-        public void UpdateItem(Guid productId, int quantity, decimal discount)
+        private SaleItem AddItem(Guid productId, string productName, decimal unitPrice, int quantity, decimal discount)
         {
-            SaleItem? existingItem = Items.FirstOrDefault(i => i.ProductId == productId);
-            if (existingItem != null)
+            SaleItem newItem = new SaleItem(productId, productName, unitPrice, quantity, discount);
+            Items.Add(newItem);
+            return newItem;
+        }
+
+        public void CalculateTotalAmount()
+        {
+            decimal totalAmount = 0;
+            foreach (SaleItem item in Items)
             {
-                existingItem.UpdateQuantity(quantity);
-                existingItem.UpdateDiscount(discount);
-                CalculateTotalAmount();
+                totalAmount += item.TotalItemValue;
             }
+
+            TotalAmount = totalAmount;
         }
 
         public void CancelSale()
         {
             IsCanceled = true;
-        }
-
-        private void CalculateTotalAmount()
-        {
-            TotalAmount = 0;
-            foreach (SaleItem item in Items)
-            {
-                TotalAmount += item.TotalItemValue;
-            }
         }
     }
 }

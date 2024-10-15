@@ -3,10 +3,11 @@ using FluentValidation;
 
 namespace _123vendas.api.Validators
 {
-    public class SaleValidator : AbstractValidator<SaleDto>
+    public class UpdateSaleValidator : AbstractValidator<UpdateSaleDto>
     {
-        public SaleValidator()
+        public UpdateSaleValidator()
         {
+            RuleFor(s => s.Id).NotEmpty().WithMessage("Sale ID is required.");
             RuleFor(s => s.CustomerId).NotEmpty().WithMessage("Customer ID is required.");
             RuleFor(s => s.CustomerName).NotEmpty().WithMessage("Customer name is required.");
             RuleFor(s => s.BranchId).NotEmpty().WithMessage("Branch ID is required.");

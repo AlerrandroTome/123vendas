@@ -34,14 +34,14 @@ namespace _123vendas.api.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> CreateSaleAsync([FromBody] SaleDto saleDto)
+        public async Task<IActionResult> CreateSaleAsync([FromBody] CreateSaleDto saleDto)
         {
             SaleDto createdSale = await _saleService.CreateSaleAsync(saleDto);
             return CreatedAtAction(nameof(GetSaleByIdAsync), new { id = createdSale.Id }, createdSale);
         }
         
         [HttpPut("{id}")]
-        public async Task<IActionResult> UpdateSaleAsync([FromBody] SaleDto saleDto)
+        public async Task<IActionResult> UpdateSaleAsync([FromBody] UpdateSaleDto saleDto)
         {
             SaleDto? result = await _saleService.UpdateSaleAsync(saleDto);
             if (result == null)

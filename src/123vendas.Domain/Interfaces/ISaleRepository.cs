@@ -8,6 +8,6 @@ namespace _123vendas.Domain.Interfaces
         Task<IEnumerable<Sale>> GetAllAsync();
         Task AddAsync(Sale sale);
         Task UpdateAsync(Sale sale);
-        Task DeleteAsync(Guid id);
+        Task<Sale?> GetByIdWithNoTrackingAsync(Guid id);
     }
 }
